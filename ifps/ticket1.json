@@ -1,0 +1,8 @@
+{
+    "name": "EventChain Ticket #1",
+    "description": "Access to EventChain Event",
+    "image": "ipfs://QmXYZ...",
+    "attributes": [
+      { "trait_type": "VIP", "value": "true" }
+    ]
+  }
