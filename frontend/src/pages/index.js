@@ -1,16 +1,18 @@
-import { useState } from "react";
+import { useState,useEffect } from "react";
 import { ethers } from "ethers";
 //import EventChain from "../artifacts/contracts/EventChain.sol/EventChain.json";
 import EventChain from "E:/EventChain/artifacts/contracts/EventChain.sol/EventChain.json";
 //import EventChain from "../constants/EventChain.json";
 
 
-
 export default function Home() {
   const [ticketURI, setTicketURI] = useState("");
   const contractAddress = "0x5FbDB2315678afecb367f032d93F642f64180aa3";
 
-  /*async function mintTicket() {
+  /*const provider = new ethers.providers.Web3Provider(window.ethereum);
+  const signer = provider.getSigner();
+  const contract = new ethers.Contract(contractAddress, EventChainABI, signer);
+  async function mintTicket() {
     if (typeof window.ethereum !== "undefined") {
       const provider = new ethers.providers.Web3Provider(window.ethereum);
       const signer = provider.getSigner();
@@ -48,6 +50,9 @@ export default function Home() {
         }
       }
     }
+
+      
+    
     
     
 
@@ -70,3 +75,4 @@ export default function Home() {
     </div>
   );
 }
+

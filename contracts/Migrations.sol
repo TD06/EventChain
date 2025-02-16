@@ -1,24 +1,38 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-contract Migrations {
-  address public owner;
-  uint256 public lastCompletedMigration;
+import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts/utils/Counters.sol";
 
-  modifier restricted() {
-    if (msg.sender == owner) _;
-  }
+contract EventChain is ERC721URIStorage, Ownable {
+    using Counters for Counters.Counter;
+    Counters.Counter private _tokenIds;
 
-  constructor() {
-    owner = msg.sender;
-  }
+    struct Ticket {
+        uint256 tokenId;
+        bool isVIP;
+    }
 
-  function setCompleted(uint256 completed) public restricted {
-    lastCompletedMigration = completed;
-  }
+    mapping(uint256 => Ticket) public tickets;
+    mapping(address => uint256[]) private ownedTokens; // Track user tickets
 
-  function upgrade(address newAddress) public restricted {
-    Migrations upgraded = Migrations(newAddress);
-    upgraded.setCompleted(lastCompletedMigration);
-  }
+    constructor() ERC721("EventChain", "EVT") {}
+
+    function mintTicket(address attendee, string memory metadataURI) public onlyOwner {
+        _tokenIds.increment();
+        uint256 newTokenId = _tokenIds.current();
+
+        bool isVIP = (newTokenId % 20 == 0); // 5% chance of VIP
+        tickets[newTokenId] = Ticket(newTokenId, isVIP);
+
+        _mint(attendee, newTokenId);
+        _setTokenURI(newTokenId, metadataURI);
+
+        ownedTokens[attendee].push(newTokenId); // Store owned tokens
+    }
+
+    function getOwnedTickets(address user) public view returns (uint256[] memory) {
+        return ownedTokens[user]; // Return all token IDs owned by the user
+    }
 }
